@@ -1,0 +1,19 @@
+# Python environment
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Environment variables
+.env
+
+# Vector store and temporary data
+chroma_db/
+.DS_Store
+
+# IDE
+.vscode/
+.idea/

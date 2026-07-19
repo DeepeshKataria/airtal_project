@@ -10,8 +10,8 @@ from src.data.ingest import chunk_text, extract_source_url, process_raw_document
 
 def test_url_to_slug():
     assert url_to_slug("https://www.airtel.in/b2b/") == "b2b_home"
-    assert url_to_slug("https://www.airtel.in/b2b/airtel-iq/") == "airtel-iq"
-    assert url_to_slug("https://www.airtel.in/b2b/connectivity/sd-wan") == "connectivity_sd-wan"
+    assert url_to_slug("https://www.airtel.in/b2b/airtel-iq/") == "b2b_airtel-iq"
+    assert url_to_slug("https://www.airtel.in/b2b/connectivity/sd-wan") == "b2b_connectivity_sd-wan"
 
 def test_extract_source_url():
     sample_content = "<!-- Source URL: https://www.airtel.in/b2b/sd-wan/ -->\n# SD-WAN Solution\nAirtel SD-WAN optimizes network traffic."

@@ -12,6 +12,15 @@ An AI assistant designed for Airtel Account Managers to query Airtel Business pr
 - `data/processed/` — Chunked/processed documents
 - `tests/` — Pytest test suite
 
+## Features
+- Retrieval-Augmented Generation (RAG) over Airtel Business public documentation
+- Airtel product Q&A with source citations
+- Product comparison
+- Meeting preparation assistant
+- Objection handling
+- Follow-up email generation
+- Streamlit web interface
+
 ## Quick Start
 
 ### 1. Environment Setup
@@ -32,3 +41,5 @@ python -m src.data.ingest
 ```bash
 streamlit run app.py
 ```
+
+

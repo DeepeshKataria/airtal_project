@@ -59,11 +59,21 @@ def get_or_build_vectorstore(force_rebuild: bool = False) -> Chroma:
             embedding_function=embeddings,
             collection_name=COLLECTION_NAME
         )
-        # Check if collection has documents
         if vectorstore._collection.count() > 0:
             return vectorstore
             
-    # Build new vector store from processed chunks
+    # Clear existing Chroma DB collection on rebuild
+    if os.path.exists(CHROMA_DB_DIR):
+        try:
+            existing_vs = Chroma(
+                persist_directory=CHROMA_DB_DIR,
+                embedding_function=embeddings,
+                collection_name=COLLECTION_NAME
+            )
+            existing_vs.delete_collection()
+        except Exception:
+            pass
+            
     documents = load_processed_chunks()
     vectorstore = Chroma.from_documents(
         documents=documents,

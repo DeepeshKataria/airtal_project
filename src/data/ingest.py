@@ -23,6 +23,41 @@ def extract_source_url(content: str) -> tuple[str, str]:
     cleaned_content = re.sub(r'<!--\s*Source URL:\s*.*?\s*-->', '', content).strip()
     return url, cleaned_content
 
+def deduplicate_text(text: str) -> str:
+    """
+    Removes duplicated paragraphs and consecutive identical lines within a document
+    while preserving document structure and heading hierarchy.
+    """
+    if not text:
+        return ""
+    
+    lines = text.split('\n')
+    cleaned_lines = []
+    seen_lines_in_doc = set()
+    
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            cleaned_lines.append("")
+            continue
+            
+        line_key = re.sub(r'\s+', ' ', stripped).lower()
+        is_heading = stripped.startswith('#')
+        
+        if len(stripped) > 30 and not is_heading:
+            if line_key in seen_lines_in_doc:
+                continue
+            seen_lines_in_doc.add(line_key)
+        else:
+            if cleaned_lines and cleaned_lines[-1].strip().lower() == line_key:
+                continue
+                
+        cleaned_lines.append(stripped)
+        
+    result = "\n".join(cleaned_lines)
+    result = re.sub(r'\n{3,}', '\n\n', result)
+    return result.strip()
+
 def chunk_text(text: str, chunk_size: int = CHUNK_SIZE, overlap: int = CHUNK_OVERLAP) -> List[str]:
     if not text:
         return []
@@ -73,7 +108,8 @@ def process_raw_documents() -> List[Dict[str, Any]]:
             content = f.read()
             
         url, cleaned_text = extract_source_url(content)
-        raw_chunks = chunk_text(cleaned_text)
+        deduped_text = deduplicate_text(cleaned_text)
+        raw_chunks = chunk_text(deduped_text)
         
         for idx, chunk_str in enumerate(raw_chunks):
             # Deduplicate exact chunk text across documents

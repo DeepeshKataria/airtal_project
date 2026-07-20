@@ -22,6 +22,15 @@ An AI assistant designed for Airtel Account Managers to query Airtel Business pr
 - Multi-turn conversation memory (last 6 turns)
 - Streamlit web interface
 
+## Architecture Overview
+The system follows a lightweight Agentic RAG architecture:
+1. **Data Pipeline**: Scrapes Airtel B2B public pages, deduplicates, and chunks them.
+2. **Retrieval**: Uses BAAI/bge-small-en-v1.5 embeddings stored locally in ChromaDB.
+3. **Agent Loop**: A stateful routing loop (`AirtelAgent`) determines the user's intent using regular expressions.
+4. **Tools**: Based on the intent, it delegates to specific sales tools (e.g. `compare_products`, `meeting_prep`) or falls back to generic RAG or direct LLM responses.
+5. **Memory**: An in-process `ConversationMemory` stores the last 6 turns (12 messages) to provide contextual awareness.
+6. **UI**: A Streamlit frontend (`app.py`) manages session state for the agent and memory per user.
+
 ## Quick Start
 
 ### 1. Environment Setup
@@ -77,3 +86,18 @@ pytest tests/ -v
 ```bash
 streamlit run app.py
 ```
+
+## Screenshots
+*(Add screenshots of the UI here)*
+
+## Known Limitations
+- The application relies on web-scraped data from Airtel public documentation which can become stale over time.
+- The retrieval similarity threshold is statically defined (`MIN_RELEVANCE_SCORE`). Some highly nuanced questions may fall below the threshold and trigger a fallback out-of-scope response.
+- In-process conversation memory (`ConversationMemory`) limits deployment scaling across multiple load-balanced workers without sticky sessions.
+- Embeddings (`BAAI/bge-small-en-v1.5`) run on the CPU locally which may be slow on some environments.
+
+## Future Improvements
+- Integrate LangChain's persistent memory (e.g., Redis or SQLite) for true multi-session support.
+- Upgrade the retriever to hybrid search (keyword + semantic) or use an external vector database like Pinecone.
+- Enhance the scraping pipeline to automatically detect and ingest new documentation periodically.
+- Deploy the Streamlit application using Docker and Streamlit Cloud.

@@ -22,6 +22,7 @@ from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 
+from src.agent.utils import _build_context
 from src.rag.retriever import retrieve_similar_chunks
 from src.agent.memory import ConversationMemory
 from src.agent.tools import (
@@ -41,9 +42,9 @@ if not GROQ_API_KEY:
         "GROQ_API_KEY not found. Set it in your .env file (see .env.example)."
     )
 
-MODEL_NAME = "llama-3.3-70b-versatile"   # Groq's latest Llama 3.3 70B
-TOP_K = 4                                 # chunks to retrieve per query
-MIN_RELEVANCE_SCORE = 0.45               # below this → treat as out-of-scope
+MODEL_NAME = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+TOP_K = 4
+MIN_RELEVANCE_SCORE = float(os.environ.get("MIN_RELEVANCE_SCORE", "0.45"))
 
 PROMPTS_DIR = Path(__file__).parents[1] / "prompts"
 
@@ -146,26 +147,6 @@ def classify_intent(query: str) -> str:
     return "retrieve"
 
 
-# ── Context builder ───────────────────────────────────────────────────────────
-
-def _build_context(chunks: list[dict]) -> tuple[str, list[str]]:
-    """Returns (formatted_context_string, list_of_unique_source_urls)"""
-    if not chunks:
-        return "", []
-
-    context_parts = []
-    seen_urls: list[str] = []
-    for c in chunks:
-        url = c.get("source_url", "")
-        context_parts.append(
-            f"[Source: {url}]\n{c['text']}"
-        )
-        if url and url not in seen_urls:
-            seen_urls.append(url)
-
-    return "\n\n---\n\n".join(context_parts), seen_urls
-
-
 # ── Main agent ────────────────────────────────────────────────────────────────
 
 class AirtelAgent:
@@ -231,12 +212,19 @@ class AirtelAgent:
             HumanMessage(content=user_content),
         ]
 
+    def _safe_invoke(self, messages: list) -> str:
+        try:
+            response = self._llm.invoke(messages)
+            return response.content
+        except Exception as e:
+            return f"I encountered an error connecting to the AI model: {str(e)}"
+
     def _direct_answer(self, query: str) -> dict:
         messages = self._build_messages(query)
-        response = self._llm.invoke(messages)
+        response_text = self._safe_invoke(messages)
         return {
             "intent": "direct",
-            "response": response.content,
+            "response": response_text,
             "sources": [],
             "chunks": [],
         }
@@ -248,10 +236,10 @@ class AirtelAgent:
             "or use case they need help with.\n\nUser message: " + query
         )
         messages = self._build_messages(clarify_prompt)
-        response = self._llm.invoke(messages)
+        response_text = self._safe_invoke(messages)
         return {
             "intent": "clarify",
-            "response": response.content,
+            "response": response_text,
             "sources": [],
             "chunks": [],
         }
@@ -278,10 +266,10 @@ class AirtelAgent:
             question=query,
         )
         messages = self._build_messages(rag_user_msg)
-        response = self._llm.invoke(messages)
+        response_text = self._safe_invoke(messages)
         return {
             "intent": "retrieve",
-            "response": response.content,
+            "response": response_text,
             "sources": source_urls,
             "chunks": chunks,
         }

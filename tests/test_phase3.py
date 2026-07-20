@@ -11,10 +11,10 @@ class TestIntentClassifier:
         assert classify_intent("How do I pitch Airtel Managed SD-WAN?") == "retrieve"
 
     def test_retrieve_compare(self):
-        assert classify_intent("Compare MPLS and SD-WAN for enterprise customers.") == "retrieve"
+        assert classify_intent("Compare MPLS and SD-WAN for enterprise customers.") == "compare"
 
     def test_retrieve_meeting_prep(self):
-        assert classify_intent("Prepare for a meeting with a retail company.") == "retrieve"
+        assert classify_intent("Prepare for a meeting with a retail company.") == "meeting_prep"
 
     def test_direct_greeting(self):
         assert classify_intent("Hello there!") == "direct"

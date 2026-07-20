@@ -19,25 +19,13 @@ from typing import Any
 from langchain_core.messages import SystemMessage, HumanMessage
 
 from src.rag.retriever import retrieve_similar_chunks
+from src.agent.utils import _build_context
 
 PROMPTS_DIR = Path(__file__).parents[1] / "prompts"
 
 
 def _load(filename: str) -> str:
     return (PROMPTS_DIR / filename).read_text(encoding="utf-8")
-
-
-def _build_context(chunks: list[dict]) -> tuple[str, list[str]]:
-    """Identical to the one in agent.py — kept here so tools are self-contained."""
-    if not chunks:
-        return "", []
-    parts, seen_urls = [], []
-    for c in chunks:
-        url = c.get("source_url", "")
-        parts.append(f"[Source: {url}]\n{c['text']}")
-        if url and url not in seen_urls:
-            seen_urls.append(url)
-    return "\n\n---\n\n".join(parts), seen_urls
 
 
 # ── System prompt (shared across all tools) ───────────────────────────────────

@@ -37,9 +37,16 @@ python -m src.data.scraper
 python -m src.data.ingest
 ```
 
-### 3. Run Application
+### 3. Run RAG CLI Retriever (Phase 2)
+```bash
+# Query with specific question
+python -m src.rag.cli "How do I pitch Airtel Managed SD-WAN?" --top-k 4
+
+# Or interactive mode
+python -m src.rag.cli
+```
+
+### 4. Run Application (Phase 5)
 ```bash
 streamlit run app.py
 ```
-
-

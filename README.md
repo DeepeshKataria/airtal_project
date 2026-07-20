@@ -7,7 +7,7 @@ An AI assistant designed for Airtel Account Managers to query Airtel Business pr
 - `src/rag/` — Embeddings, vector store, retriever
 - `src/agent/` — Agent loop, tools, memory
 - `src/prompts/` — System, RAG, comparison, meeting prep, objection, and email prompts
-- `app.py` — Streamlit UI (Phase 5)
+- `app.py` — Streamlit UI
 - `data/raw/` — Collected source documents
 - `data/processed/` — Chunked/processed documents
 - `tests/` — Pytest test suite
@@ -20,7 +20,7 @@ An AI assistant designed for Airtel Account Managers to query Airtel Business pr
 - Objection handling with grounded rebuttals
 - Follow-up email drafting
 - Multi-turn conversation memory (last 6 turns)
-- Streamlit web interface (Phase 5)
+- Streamlit web interface
 
 ## Quick Start
 
@@ -73,7 +73,7 @@ pytest tests/ -k "not slow" -v
 pytest tests/ -v
 ```
 
-### 7. Run Application (Phase 5)
+### 7. Run Streamlit UI Application
 ```bash
 streamlit run app.py
 ```

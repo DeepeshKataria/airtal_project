@@ -717,7 +717,7 @@ if not st.session_state.chat_history and st.session_state.pending_prompt is None
 
 # Display chat history
 for msg in st.session_state.chat_history:
-    avatar = "AI" if msg["role"] == "assistant" else "You"
+    avatar = "🔴" if msg["role"] == "assistant" else "👤"
     with st.chat_message(msg["role"], avatar=avatar):
         st.markdown(msg["content"], unsafe_allow_html=True)
 
@@ -734,11 +734,11 @@ if st.session_state.pending_prompt:
 if query:
     # Append and render user message
     st.session_state.chat_history.append({"role": "user", "content": query})
-    with st.chat_message("user", avatar="You"):
+    with st.chat_message("user", avatar="👤"):
         st.markdown(query)
 
     # Generate response
-    with st.chat_message("assistant", avatar="AI"):
+    with st.chat_message("assistant", avatar="🔴"):
         # Thinking indicator
         thinking_placeholder = st.empty()
         thinking_placeholder.markdown("""

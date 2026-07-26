@@ -55,6 +55,10 @@ Tourism in India has witnessed a sudden boom in the last few years, catching man
 
 Flexible and agile network solutions basis your business expansion needs
 
+#### Private 5G
+
+Automate, innovate, and scale with our futuristic Private 5G solutions
+
 #### Business Collaboration
 
 Cloud based communications solutions for enhanced collaboration and reduced operational costs
@@ -63,22 +67,13 @@ Cloud based communications solutions for enhanced collaboration and reduced oper
 
 Ensure timely, assured delivery of transaction messaging across channels
 
-#### Private 5G
-
-Automate, innovate, and scale with our futuristic Private 5G solutions
-
 ## Productssuited for your business needs
 
-- ColocationBuild your future ready infrastructure with Nxtra.Learn More
-Build your future ready infrastructure with Nxtra.
-- iSOCMonitor your business 24x7 for cyber risks.Learn More
-Monitor your business 24x7 for cyber risks.
-- Corporate PostpaidGet faster speeds and better indoor and outdoor coverage with Airtel 5G Plus.Learn More
-Get faster speeds and better indoor and outdoor coverage with Airtel 5G Plus.
-- DDoS SecurityEnsure business continuity and beat DDoS attacks in real time.Learn More
-Ensure business continuity and beat DDoS attacks in real time.
-- WhatsAppDeliver engaging & secure messaging experiences, addressing customer needs.Learn More
-Deliver engaging & secure messaging experiences, addressing customer needs.
+Get faster speeds and better indoor and outdoor coverage with Airtel 5G Plus.Learn More
+Deliver engaging & secure messaging experiences, addressing customer needs.Learn More
+Build your future ready infrastructure with Nxtra.Learn More
+Ensure business continuity and beat DDoS attacks in real time.Learn More
+Monitor your business 24x7 for cyber risks.Learn More
 
 ## Why Airtelfor travel and tourism?
 
@@ -114,9 +109,3 @@ Get real-time, detailed campaign reports on how you engage with your customers.
 Seamlessly connect your offices using a diverse selection of network options - fiber, copper, radio, CEN, VSAT, and 4G.
 
 #### Needmore informationaboutAirtel Business solutions?
-
-Thank you for sharing your request with us. We'llget in touchwith you soon.
-There is already an existing Lead with provided details. Please tryafter 24 hours.
-Something went wrong.
-
-## We’re here to help you

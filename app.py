@@ -3,6 +3,16 @@ Airtel B2B AI Sales Assistant - Streamlit UI (Phase 5)
 """
 
 import streamlit as st
+import os
+import logging
+from dotenv import load_dotenv
+
+# Suppress Streamlit's local_sources_watcher warnings about torchvision/transformers
+logging.getLogger("streamlit.watcher.local_sources_watcher").setLevel(logging.ERROR)
+
+# Ensure .env is loaded at the application entry point
+load_dotenv()
+
 from src.agent.agent import AirtelAgent
 from src.agent.memory import ConversationMemory
 import traceback
@@ -38,7 +48,11 @@ except Exception as e:
 # ─── Sidebar ──────────────────────────────────────────────────────────────────
 
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Airtel_logo.svg/512px-Airtel_logo.svg.png", width=150)
+    logo_path = "assets/airtel_logo.png"
+    if os.path.exists(logo_path):
+        st.image(logo_path, width=150)
+    else:
+        st.warning("Logo missing. Please place your image at 'assets/airtel_logo.png'.")
     st.title("Settings & Actions")
     if st.button("Clear Conversation", use_container_width=True):
         reset_conversation()

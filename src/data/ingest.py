@@ -93,6 +93,12 @@ def chunk_text(text: str, chunk_size: int = CHUNK_SIZE, overlap: int = CHUNK_OVE
     return chunks
 
 def process_raw_documents() -> List[Dict[str, Any]]:
+    """
+    Read all raw markdown/text files from data/raw/, deduplicate, chunk, and
+    write the result to data/processed/chunks.json.
+
+    Returns the list of chunk dicts that were written.
+    """
     os.makedirs(PROCESSED_DATA_DIR, exist_ok=True)
     if not os.path.exists(RAW_DATA_DIR):
         os.makedirs(RAW_DATA_DIR, exist_ok=True)

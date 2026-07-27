@@ -19,6 +19,7 @@ EMBEDDING_MODEL_NAME = "BAAI/bge-small-en-v1.5"
 _embeddings_instance = None
 
 def get_embeddings():
+    """Return the shared HuggingFace embedding model instance (singleton pattern)."""
     global _embeddings_instance
     if _embeddings_instance is None:
         _embeddings_instance = HuggingFaceEmbeddings(
@@ -50,6 +51,12 @@ def load_processed_chunks() -> List[Document]:
     return documents
 
 def get_or_build_vectorstore(force_rebuild: bool = False) -> Chroma:
+    """
+    Return an existing ChromaDB vector store or build one from processed chunks.
+
+    If the vector store already exists on disk and contains documents, it is reused.
+    Otherwise (or if force_rebuild=True), it is rebuilt from data/processed/chunks.json.
+    """
     os.makedirs(CHROMA_DB_DIR, exist_ok=True)
     embeddings = get_embeddings()
     

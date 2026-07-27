@@ -13,7 +13,6 @@ Design decision: a plain deque with a max-length cap.
 from __future__ import annotations
 
 from collections import deque
-from typing import Literal
 
 from langchain_core.messages import HumanMessage, AIMessage, BaseMessage
 

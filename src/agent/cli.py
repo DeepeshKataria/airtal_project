@@ -5,7 +5,6 @@ Usage:
     python -m src.agent.cli   (interactive mode)
 """
 
-import sys
 import argparse
 from src.agent.agent import ask, MODEL_NAME
 

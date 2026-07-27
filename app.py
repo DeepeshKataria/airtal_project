@@ -4,6 +4,7 @@ Airtel Business AI Assistant — Streamlit Frontend
 
 import streamlit as st
 import os
+import time
 import logging
 from dotenv import load_dotenv
 
@@ -576,6 +577,32 @@ with st.sidebar:
         reset_conversation()
         st.rerun()
 
+    # Export conversation
+    if st.session_state.chat_history:
+        export_lines = []
+        for msg in st.session_state.chat_history:
+            role = "User" if msg["role"] == "user" else "Assistant"
+            # Strip HTML tags for clean export
+            import re as _re
+            clean_text = _re.sub(r'<[^>]+>', '', msg["content"])
+            export_lines.append(f"**{role}:**\n{clean_text}\n")
+        export_md = "\n---\n\n".join(export_lines)
+
+        st.download_button(
+            "↓  Export as Markdown",
+            data=export_md,
+            file_name="airtel_ai_conversation.md",
+            mime="text/markdown",
+            use_container_width=True,
+        )
+        st.download_button(
+            "↓  Export as TXT",
+            data=export_md.replace("**", "").replace("---", "───"),
+            file_name="airtel_ai_conversation.txt",
+            mime="text/plain",
+            use_container_width=True,
+        )
+
     # Status card
     turns_used = len(st.session_state.memory) // 2
     status_color = "#22c55e" if agent_ready else "#ef4444"
@@ -632,21 +659,27 @@ def format_intent_badge(intent: str) -> str:
     return f'<div class="intent-badge {css_class}">{label}</div>'
 
 
-def format_sources(sources: list) -> str:
+def _humanize_source_label(url: str) -> str:
+    """Convert an Airtel B2B URL into a readable page label."""
+    short = url.replace("https://", "").replace("http://", "")
+    parts = short.rstrip("/").split("/")
+    # Extract the last meaningful path segment and clean it up
+    if len(parts) > 1:
+        slug = parts[-1] if parts[-1] else parts[-2]
+        label = slug.replace("-", " ").replace("_", " ").title()
+        return label
+    return short[:37] + "…" if len(short) > 40 else short
+
+
+def format_sources(sources: list, num_chunks: int = 0) -> str:
     if not sources:
         return ""
+    count_label = f"{num_chunks} documents retrieved · " if num_chunks else ""
     chips = ""
     for url in sources:
-        # Extract a readable label from the URL path
-        short = url.replace("https://", "").replace("http://", "")
-        # Show just the meaningful path segment
-        parts = short.rstrip("/").split("/")
-        if len(parts) > 2:
-            short = parts[0] + "/…/" + parts[-1]
-        if len(short) > 40:
-            short = short[:37] + "…"
-        chips += f'<a href="{url}" target="_blank" class="source-chip">↗ {short}</a>'
-    return f'<div class="source-section"><div class="source-label">Sources</div>{chips}</div>'
+        label = _humanize_source_label(url)
+        chips += f'<a href="{url}" target="_blank" class="source-chip">↗ {label}</a>'
+    return f'<div class="source-section"><div class="source-label">{count_label}{len(sources)} sources</div>{chips}</div>'
 
 
 # ── Main area ─────────────────────────────────────────────────────────────────
@@ -749,7 +782,9 @@ if query:
         """, unsafe_allow_html=True)
 
         try:
+            start_time = time.time()
             result = agent.answer(query)
+            elapsed = time.time() - start_time
 
             # Clear thinking indicator
             thinking_placeholder.empty()
@@ -758,11 +793,19 @@ if query:
             intent = result.get("intent", "retrieve")
             badge_html = format_intent_badge(intent)
             response_body = result["response"]
-            sources_html = format_sources(result.get("sources", []))
+            num_chunks = len(result.get("chunks", []))
+            sources_html = format_sources(result.get("sources", []), num_chunks=num_chunks)
+            time_label = f'<div style="font-size:11px;color:#525252;margin-top:8px;">⏱ {elapsed:.1f}s</div>'
 
-            display_content = f'{badge_html}\n\n{response_body}\n\n{sources_html}'
+            display_content = f'{badge_html}\n\n{response_body}\n\n{sources_html}{time_label}'
 
             st.markdown(display_content, unsafe_allow_html=True)
+
+            # Copy response button
+            st.button("📋 Copy response", key=f"copy_{len(st.session_state.chat_history)}",
+                      on_click=lambda text=response_body: st.session_state.update({"_clipboard": text}))
+            if st.session_state.get("_clipboard"):
+                st.code(st.session_state.pop("_clipboard"), language=None)
 
             st.session_state.chat_history.append({
                 "role": "assistant",
@@ -771,9 +814,14 @@ if query:
 
         except Exception as e:
             thinking_placeholder.empty()
-            error_msg = f"Something went wrong.\n\n```\n{traceback.format_exc()}\n```"
-            st.error(error_msg)
+            user_msg = (
+                "⚠️ Something went wrong while generating a response. "
+                "Please try again or rephrase your question."
+            )
+            st.error(user_msg)
+            with st.expander("Technical details"):
+                st.code(traceback.format_exc(), language="python")
             st.session_state.chat_history.append({
                 "role": "assistant",
-                "content": error_msg,
+                "content": user_msg,
             })

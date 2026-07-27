@@ -20,7 +20,7 @@ from typing import Optional
 
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
-from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
+from langchain_core.messages import SystemMessage, HumanMessage
 
 from src.agent.utils import _build_context
 from src.rag.retriever import retrieve_similar_chunks

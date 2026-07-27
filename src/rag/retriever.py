@@ -33,6 +33,13 @@ class AirtelRetriever:
         return retrieved_chunks
 
 def retrieve_similar_chunks(query: str, k: int = 4) -> List[Dict[str, Any]]:
+    """
+    Convenience function: retrieve top-k relevant document chunks for a query.
+
+    Instantiates an AirtelRetriever with the default vector store and delegates
+    to its retrieve() method. Each returned chunk contains 'text', 'source_url',
+    'file_name', 'chunk_id', and 'score' keys.
+    """
     retriever = AirtelRetriever()
     return retriever.retrieve(query, k=k)
 

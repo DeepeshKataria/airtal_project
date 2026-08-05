@@ -174,3 +174,11 @@ pytest tests/ -v
 ## License
 
 This project is for educational and portfolio purposes. The scraped Airtel B2B content remains the property of Bharti Airtel Limited.
+
+## Author
+
+**Deepesh Kataria**
+
+GitHub: https://github.com/DeepeshKataria
+
+LinkedIn: https://www.linkedin.com/in/deepesh-kataria-3392aa2b8/
